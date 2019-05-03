@@ -16,8 +16,10 @@ class Recipe(models.Model):
     title = models.CharField(max_length=50)
     author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, blank=True)
     description = models.CharField(max_length=100, null=True, blank=True)
-    # time_required = models.TimeField(null=True, blank=True)
-    time_required = models.CharField(max_length=20)
+    time_required = models.CharField(max_length=20, null=True)
     instructions = models.TextField()
+
+    def __str__(self):
+        return self.title
 
     
