@@ -1,0 +1,11 @@
+<h1>Hello, World</h1>
+
+
+<ul>
+    {% for foo in data %}
+        <li>{{ foo.title }}, by  {{ foo.author }}</li>
+        <ul>{{ foo.description }}, {{ foo.time_required }}, {{ foo.instructions }}</ul>
+    {% endfor %}
+</ul>
+
+{{ data }}

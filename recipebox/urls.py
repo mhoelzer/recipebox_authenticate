@@ -19,6 +19,8 @@ from recipebox import views
 
 from recipebox.models import Author
 from recipebox.models import Recipe
+
+# the lines below tell the admin site that the models exist and that we want to interact with them.  normally in an admin.py file
 admin.site.register(Author)
 admin.site.register(Recipe)
 

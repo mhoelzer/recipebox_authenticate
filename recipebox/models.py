@@ -5,18 +5,19 @@ from django.contrib.auth.models import User
 # all classes go here
 class Author(models.Model):
     name = models.CharField(max_length=50)
-    user = models.OnetoOne(User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     bio = models.TextField()
 
     def __str__(self):
-        return  self.name
+        return self.name
 
 
 class Recipe(models.Model):
     title = models.CharField(max_length=50)
-    author = models.ForeignKey(Author, on_delete=models.CASCASE)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE, null=True, blank=True)
     description = models.CharField(max_length=100, null=True, blank=True)
-    time_required = models.TimeField(null=True, blank=True)
+    # time_required = models.TimeField(null=True, blank=True)
+    time_required = models.CharField(max_length=20)
     instructions = models.TextField()
 
     
