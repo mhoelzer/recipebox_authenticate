@@ -22,4 +22,4 @@ class Recipe(models.Model):
     def __str__(self):
         return self.title
 
-    
+# Make two form models (contained within forms.py) that we can serve and take in data from.

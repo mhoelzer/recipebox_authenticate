@@ -28,5 +28,7 @@ urlpatterns = [
     path('', views.index),
     path('admin/', admin.site.urls),
     path('author/<int:id>/', views.auth_detail),
-    path('recipe/<int:id>/', views.recipe)
+    path('recipe/<int:id>/', views.recipe),
+    path('recipeadd/', views.recipe_add),
+    path('authoradd/', views.author_add,)
 ]
