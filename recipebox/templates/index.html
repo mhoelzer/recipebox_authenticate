@@ -27,7 +27,15 @@
   <u>Recipes</u>
   <br>
   {% for foo in data %}
-  <a href="recipe/{{ foo.id }}/">{{ foo.title }}</a><br>
+  <li><a href="recipe/{{ foo.id }}/">{{ foo.title }}</a><br></li>
   {% endfor %}
 </ul>
+
+Click <a href="/signup/">here</a> to become a user.
+<br>
+Log in <a href="/login/">here.</a>
+<br>
+Add a new recipe <a href="/recipeadd/">here.</a>
+
+<p><a href="/logout/">logout</a></p>
 

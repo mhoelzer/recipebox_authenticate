@@ -1,5 +1,6 @@
 <form action='/authoradd/' method="post">
     {% csrf_token %}
+    {% if request.user.is_staff %}
     {{ hi.as_p }}
     <input type='submit' value='Submit'>
 </form>
