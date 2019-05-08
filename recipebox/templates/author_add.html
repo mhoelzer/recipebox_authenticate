@@ -1,5 +1,7 @@
+{% load crispy_forms_tags %}
 <form action='/authoradd/' method="post">
     {% csrf_token %}
-    {{ hi.as_p }}
+    {% if request.user.is_staff %}
+    {{ hi|crispy }}
     <input type='submit' value='Submit'>
 </form>

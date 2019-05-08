@@ -1,4 +1,4 @@
-
+{% load static %}
 <head>
   <link
     rel="stylesheet"
@@ -22,12 +22,25 @@
     crossorigin="anonymous"
   ></script>
 </head>
-
-<ul>
+<ul class="heading">
   <u>Recipes</u>
-  <br>
+  <br />
   {% for foo in data %}
-  <a href="recipe/{{ foo.id }}/">{{ foo.title }}</a><br>
+  <li>
+    <a href="recipe/{{ foo.id }}/">{{ foo.title }}</a
+    ><br />
+  </li>
   {% endfor %}
 </ul>
 
+<!-- Click <a href="/signup/">here</a> to become a user. -->
+<a class="btn btn-outline-primary btn-lg btn-block" href="/signup/" role="button">Sign up</a>
+
+<br />
+<!-- Add a new recipe <a href="/recipeadd/">here.</a> -->
+<a class="btn btn-outline-primary btn-lg btn-block" href="/recipeadd/" role="button">Add a recipe</a>
+<br>
+<!-- Log in <a href="/login/">here.</a> -->
+<a class="btn btn-outline-primary btn-lg btn-block" href="/login/" role="button">Login</a>
+<br />
+<a class="btn btn-outline-primary btn-lg btn-block" href="/logout/" role="button">Logout</a>
