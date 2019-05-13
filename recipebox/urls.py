@@ -34,6 +34,6 @@ urlpatterns = [
     path('authoradd/', views.author_add,),
     path('signup/', views.signup_view),
     path('login/', views.login_view),
-    path('logout/', views.logout)
+    path('logout/', views.logout_view)
 
 ]

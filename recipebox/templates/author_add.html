@@ -3,5 +3,6 @@
     {% csrf_token %}
     {% if request.user.is_staff %}
     {{ hi|crispy }}
+    {% endif %}
     <input type='submit' value='Submit'>
 </form>

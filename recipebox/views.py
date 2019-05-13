@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.contrib.auth.models import User
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import reverse, render
@@ -103,6 +103,7 @@ def signup_view(request):
             login(request, user)
             Author.objects.create(
                 name=data['name'],
+                email=data['email'],
                 user=user
             )
             return HttpResponseRedirect(reverse('index'))
@@ -110,15 +111,13 @@ def signup_view(request):
         form = SignupForm()
     return render(request, html, {'form': form})
 
-    # recipes = Recipe.objects.all()
-    # return render(request, html, {'data': recipes})
-
 
 def login_view(request):
     html = "generic_form.html"
     form = None
 
     if request.method == "POST":
+        breakpoint()
         form = LoginForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
@@ -133,7 +132,6 @@ def login_view(request):
     return render(request, html, {'form': form})
 
 
-def logout(request):
+def logout_view(request):
     logout(request)
-    html = "goodbye.html"
-    return render(request, html)
+    return HttpResponseRedirect(reverse('index'))
