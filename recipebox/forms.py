@@ -20,6 +20,7 @@ class SignupForm(forms.Form):
     name = forms.CharField(max_length=100)
     username = forms.CharField(max_length=100)
     email = forms.EmailField()
+    bio = forms.CharField(widget=forms.Textarea)
     password = forms.CharField(widget=forms.PasswordInput())
 
 

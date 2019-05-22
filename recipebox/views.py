@@ -86,8 +86,8 @@ def author_add(request):
     return render(request, html, {'hi': form})
 
 
-@login_required()
-@staff_member_required()
+# @login_required()
+# @staff_member_required()
 def signup_view(request):
     html = "generic_form.html"
     form = None
@@ -103,7 +103,8 @@ def signup_view(request):
             login(request, user)
             Author.objects.create(
                 name=data['name'],
-                email=data['email'],
+                # email=data['email'],
+                bio=data["bio"],
                 user=user
             )
             return HttpResponseRedirect(reverse('index'))
@@ -117,7 +118,7 @@ def login_view(request):
     form = None
 
     if request.method == "POST":
-        breakpoint()
+        # breakpoint()
         form = LoginForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
