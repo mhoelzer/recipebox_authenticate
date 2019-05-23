@@ -23,8 +23,8 @@
     ></script>
   </head>
   
+  {% for recipe in data %}
   <ul>
-    {% for recipe in data %}
     <ul>
         <a href="/author/{{ recipe.author.id }}">{{ recipe.author }}'s</a> recipes:
         <br>
@@ -32,6 +32,7 @@
         Prep/Bake Time:{{ recipe.time_required }}<br>
         Instructions:{{ recipe.instructions }}<br>
     </ul>
-    {% endfor %}
   </ul>
+  <a class="btn btn-outline-primary btn-lg btn-block" href="/recipeupdate/{{ recipe.id }}" role="button">Update this fine recipe to make it even finer</a>
+  {% endfor %}
   

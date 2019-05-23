@@ -11,6 +11,7 @@ from recipebox.forms import RecipeAddForm
 from recipebox.forms import AuthorAddForm
 from recipebox.forms import SignupForm
 from recipebox.forms import LoginForm
+from recipebox.forms import RecipeUpdateForm
 
 
 def index(request):
@@ -58,6 +59,44 @@ def recipe_add(request):
     return render(request, html, {'form': form})
 
 
+@login_required()
+# if currentuser is recipe author
+def recipe_update(request, id):
+    html = 'recipe_update.html'
+    form = None
+    current_user = User.objects.get(id=request.user.id)
+    # print(Recipe.objects.all())
+    current_recipe = Recipe.objects.get(id=id)
+    data = {
+        "title": current_recipe.title,
+        "author": current_recipe.author,
+        "description": current_recipe.description,
+        "time_required": current_recipe.time_required,
+        "instructions": current_recipe.instructions
+    }
+    # if current_user or request.user.is_authenticated or request.auth:
+    # could also put this around the button in the recipe.html
+    if request.method == 'POST':
+        form = RecipeUpdateForm(request.POST)
+
+        if form.is_valid():
+            data = form.cleaned_data
+
+            updated_recipe = Recipe.objects.create(
+                title=data['title'],
+                instructions=data['instructions'],
+                # author=data['author'],
+                author=request.user.author,
+                description=data['description'],
+                time_required=data['time_required']
+            )
+            return render(request, 'thanks.html', {'updated_recipe': updated_recipe})
+
+    else:
+        form = RecipeUpdateForm(initial=data)
+        # form.fields["title"].initial = current_recipe.title
+    return render(request, html, {'form': form})
+
 # author add is for admin to add an author
 @login_required()
 @staff_member_required()
@@ -99,7 +138,7 @@ def signup_view(request):
             data = form.cleaned_data
             user = User.objects.create_user(
                 data['username'], data['email'], data['password'])
-                # user.save()
+            # user.save()
             login(request, user)
             Author.objects.create(
                 name=data['name'],
