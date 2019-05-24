@@ -23,7 +23,16 @@ def index(request):
 def recipe(request, id):
     html = "recipe.html"
     recipes = Recipe.objects.filter(id=id)
-    return render(request, html, {'data': recipes})
+    current_user_bool = None
+    current_user = request.user
+    # print(current_user)
+    # print(recipes.first().author.name)
+    if current_user is recipes.first().author.name:
+        current_user_bool = True
+    else:
+        current_user_bool = False
+    # print(current_user_bool)
+    return render(request, html, {'data': recipes, "current_user": current_user_bool})
 
 
 def auth_detail(request, id):
@@ -69,10 +78,10 @@ def recipe_update(request, id):
     current_recipe = Recipe.objects.get(id=id)
     data = {
         "title": current_recipe.title,
-        "author": current_recipe.author,
+        # "author": current_recipe.author,
         "description": current_recipe.description,
         "time_required": current_recipe.time_required,
-        "instructions": current_recipe.instructions
+        "instructions": current_recipe.instructions,
     }
     # if current_user or request.user.is_authenticated or request.auth:
     # could also put this around the button in the recipe.html
@@ -81,18 +90,22 @@ def recipe_update(request, id):
 
         if form.is_valid():
             data = form.cleaned_data
-
-            updated_recipe = Recipe.objects.create(
-                title=data['title'],
-                instructions=data['instructions'],
-                # author=data['author'],
-                author=request.user.author,
-                description=data['description'],
-                time_required=data['time_required']
-            )
-            return render(request, 'thanks.html', {'updated_recipe': updated_recipe})
-
+            current_recipe.title = data['title']
+            current_recipe.instructions = data['instructions']
+            current_recipe.description = data['description']
+            current_recipe.time_required = data['time_required']
+            # updated_recipe = Recipe.objects.create(
+            #     title=data['title'],
+            #     instructions=data['instructions'],
+            #     # author=data['author'],
+            #     # author=request.user.author,
+            #     description=data['description'],
+            #     time_required=data['time_required']
+            # )
+            current_recipe.save()
+            return HttpResponseRedirect(reverse('index'))
     else:
+        # show_edit_button = False
         form = RecipeUpdateForm(initial=data)
         # form.fields["title"].initial = current_recipe.title
     return render(request, html, {'form': form})

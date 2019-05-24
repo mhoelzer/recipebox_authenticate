@@ -26,13 +26,16 @@
   {% for recipe in data %}
   <ul>
     <ul>
-        <a href="/author/{{ recipe.author.id }}">{{ recipe.author }}'s</a> recipes:
+        <a href="/author/{{ recipe.author.id }}">{{ recipe.author }}</a>'s recipe:
         <br>
+        Title: {{ recipe.title }}<br>
         Description: {{ recipe.description }}<br>
         Prep/Bake Time:{{ recipe.time_required }}<br>
         Instructions:{{ recipe.instructions }}<br>
     </ul>
   </ul>
+  {% if request.user or user.is_authenticated %}  
   <a class="btn btn-outline-primary btn-lg btn-block" href="/recipeupdate/{{ recipe.id }}" role="button">Update this fine recipe to make it even finer</a>
+  {% endif %}
   {% endfor %}
   
