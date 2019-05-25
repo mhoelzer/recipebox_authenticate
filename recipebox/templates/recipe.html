@@ -23,22 +23,26 @@
     ></script>
   </head>
   
-  {% for recipe in data %}
+
+
   <ul>
     <ul>
-        <a href="/author/{{ recipe.author.id }}">{{ recipe.author }}</a>'s recipe:
+        <a href="/author/{{ data.author.id }}">{{ data.author }}</a>'s data:
         <br>
-        Title: {{ recipe.title }}<br>
-        Description: {{ recipe.description }}<br>
-        Prep/Bake Time:{{ recipe.time_required }}<br>
-        Instructions:{{ recipe.instructions }}<br>
+        Title: {{ data.title }}<br>
+        Description: {{ data.description }}<br>
+        Prep/Bake Time:{{ data.time_required }}<br>
+        Instructions:{{ data.instructions }}<br>
     </ul>
   </ul>
+  
   {% if user.is_authenticated %}
-  <a class="btn btn-outline-primary btn-lg btn-block" href="/favoritestatus/{{ recipe.id }}" role="button">{{ fav_button }}</a>
+  <a class="btn btn-outline-primary btn-lg btn-block" href="/favoritestatus/{{ data.id }}" role="button">{{ fav_button }}</a>
   {% endif %}
-  {% if request.user or user.is_authenticated %}  
-  <a class="btn btn-outline-primary btn-lg btn-block" href="/recipeupdate/{{ recipe.id }}" role="button">Update this fine recipe to make it even finer</a>
+
+  {% if show_edit_button %}  
+  <a class="btn btn-outline-primary btn-lg btn-block" href="/recipeupdate/{{ data.id }}" role="button">Update this fine recipe to make it even finer</a>
   {% endif %}
-  {% endfor %}
+
+
   
