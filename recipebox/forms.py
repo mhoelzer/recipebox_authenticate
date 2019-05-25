@@ -12,18 +12,10 @@ class RecipeAddForm(forms.Form):
 
 
 class RecipeUpdateForm(forms.Form):
-    # make init fuction like constructor; initialize values for form
-    # def __init__(self, title):
-    #     # will need to inherit
-    #     super().__init__()
-    #     self.title = title
-
     title = forms.CharField(max_length=160)
     instructions = forms.CharField(widget=forms.Textarea)
-    # author = forms.ModelChoiceField(queryset=Author.objects.all())
     description = forms.CharField(max_length=100)
     time_required = forms.CharField(max_length=20)
-
 
 
 class AuthorAddForm(forms.Form):
