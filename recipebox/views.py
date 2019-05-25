@@ -22,24 +22,24 @@ def index(request):
 
 def recipe(request, id):
     html = "recipe.html"
-    recipes = Recipe.objects.filter(id=id)
-    current_user_bool = None
+    recipes = Recipe.objects.get(id=id)
     current_user = request.user
-    # print(current_user)
-    # print(recipes.first().author.name)
-    # print(recipes.first()) # this is the title
     fav_button = None
-    if current_user and recipes not in current_user.author.favorites.get_queryset():
-        fav_button = "love it!"
+    show_edit_button = None
+    if current_user.is_authenticated:
+        if request.user.author == recipes.author or current_user.is_staff:
+            show_edit_button = True
+        if recipes not in current_user.author.favorites.all():
+            fav_button = "love it!"
+        elif recipes in current_user.author.favorites.all():
+            fav_button = "this sucks; i hate it"
     else:
-        fav_button = "this sucks; i hate it"
-    # print(Author.objects.filter(id=id).first().favorites.get_queryset())
-    if current_user is recipes.first().author.name:
-        current_user_bool = True
-    else:
-        current_user_bool = False
-    # print(current_user_bool)
-    return render(request, html, {'data': recipes, "current_user": current_user_bool, "fav_button": fav_button})
+        show_edit_button = False
+        return render(request, html, {'data': recipes,
+                                      "show_edit_button": show_edit_button})
+    return render(request, html, {'data': recipes,
+                                  "fav_button": fav_button,
+                                  "show_edit_button": show_edit_button})
 
 
 def favorite_status(request, id):
@@ -62,15 +62,16 @@ def auth_detail(request, id):
     author = Author.objects.filter(id=id)
     list_of_recipes = Recipe.objects.filter(author_id=id)
     favorites = author.first().favorites.get_queryset()
-    print(favorites)
-    return render(request, html, {'data': author, 'recipes': list_of_recipes, "favorites": favorites})
+    return render(request, html, {'data': author,
+                                  'recipes': list_of_recipes,
+                                  "favorites": favorites})
 
 
 @login_required()
 def recipe_add(request):
     html = 'recipe_add.html'
     form = None
-
+    # show_edit_button: False
     if request.method == 'POST':
         form = RecipeAddForm(request.POST)
 
@@ -85,10 +86,12 @@ def recipe_add(request):
                 description=data['description'],
                 time_required=data['time_required']
             )
+            # show_edit_button = True
             return render(request, 'thanks.html', {'new_recipe': new_recipe})
 
     else:
         form = RecipeAddForm()
+        # show_edit_button = False
     return render(request, html, {'form': form})
 
 
@@ -98,7 +101,6 @@ def recipe_update(request, id):
     html = 'recipe_update.html'
     form = None
     current_user = User.objects.get(id=request.user.id)
-    # print(Recipe.objects.all())
     current_recipe = Recipe.objects.get(id=id)
     data = {
         "title": current_recipe.title,
@@ -110,7 +112,6 @@ def recipe_update(request, id):
     # could also put this around the button in the recipe.html
     if request.method == 'POST':
         form = RecipeUpdateForm(request.POST)
-
         if form.is_valid():
             data = form.cleaned_data
             current_recipe.title = data['title']
@@ -118,9 +119,9 @@ def recipe_update(request, id):
             current_recipe.description = data['description']
             current_recipe.time_required = data['time_required']
             current_recipe.save()
-            return HttpResponseRedirect(reverse('index'))
+            # return HttpResponseRedirect(reverse('index'))
+            return render(request, 'updated.html', {'current_recipe': current_recipe})
     else:
-        # show_edit_button = False
         form = RecipeUpdateForm(initial=data)
         # form.fields["title"].initial = current_recipe.title
     return render(request, html, {'form': form})
