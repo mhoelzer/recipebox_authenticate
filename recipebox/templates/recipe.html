@@ -34,6 +34,9 @@
         Instructions:{{ recipe.instructions }}<br>
     </ul>
   </ul>
+  {% if user.is_authenticated %}
+  <a class="btn btn-outline-primary btn-lg btn-block" href="/favoritestatus/{{ recipe.id }}" role="button">{{ fav_button }}</a>
+  {% endif %}
   {% if request.user or user.is_authenticated %}  
   <a class="btn btn-outline-primary btn-lg btn-block" href="/recipeupdate/{{ recipe.id }}" role="button">Update this fine recipe to make it even finer</a>
   {% endif %}

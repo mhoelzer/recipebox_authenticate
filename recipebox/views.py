@@ -27,19 +27,43 @@ def recipe(request, id):
     current_user = request.user
     # print(current_user)
     # print(recipes.first().author.name)
+    # print(recipes.first()) # this is the title
+    fav_button = None
+    if current_user and recipes not in current_user.author.favorites.get_queryset():
+        fav_button = "love it!"
+    else:
+        fav_button = "this sucks; i hate it"
+    # print(Author.objects.filter(id=id).first().favorites.get_queryset())
     if current_user is recipes.first().author.name:
         current_user_bool = True
     else:
         current_user_bool = False
     # print(current_user_bool)
-    return render(request, html, {'data': recipes, "current_user": current_user_bool})
+    return render(request, html, {'data': recipes, "current_user": current_user_bool, "fav_button": fav_button})
+
+
+def favorite_status(request, id):
+    html = "../templates/favorite_status.html"
+    is_favorite = False
+    current_user = request.user
+    recipe = Recipe.objects.filter(id=id).first()
+    if recipe not in current_user.author.favorites.get_queryset():
+        current_user.author.favorites.add(recipe)
+        is_favorite = True
+    else:
+        current_user.author.favorites.remove(recipe)
+        is_favorite = False
+    current_user.save()
+    return render(request, html, {"is_favorite": is_favorite})
 
 
 def auth_detail(request, id):
     html = "author.html"
     author = Author.objects.filter(id=id)
     list_of_recipes = Recipe.objects.filter(author_id=id)
-    return render(request, html, {'data': author, 'recipes': list_of_recipes})
+    favorites = author.first().favorites.get_queryset()
+    print(favorites)
+    return render(request, html, {'data': author, 'recipes': list_of_recipes, "favorites": favorites})
 
 
 @login_required()
@@ -78,7 +102,6 @@ def recipe_update(request, id):
     current_recipe = Recipe.objects.get(id=id)
     data = {
         "title": current_recipe.title,
-        # "author": current_recipe.author,
         "description": current_recipe.description,
         "time_required": current_recipe.time_required,
         "instructions": current_recipe.instructions,
@@ -94,14 +117,6 @@ def recipe_update(request, id):
             current_recipe.instructions = data['instructions']
             current_recipe.description = data['description']
             current_recipe.time_required = data['time_required']
-            # updated_recipe = Recipe.objects.create(
-            #     title=data['title'],
-            #     instructions=data['instructions'],
-            #     # author=data['author'],
-            #     # author=request.user.author,
-            #     description=data['description'],
-            #     time_required=data['time_required']
-            # )
             current_recipe.save()
             return HttpResponseRedirect(reverse('index'))
     else:
@@ -138,8 +153,6 @@ def author_add(request):
     return render(request, html, {'hi': form})
 
 
-# @login_required()
-# @staff_member_required()
 def signup_view(request):
     html = "generic_form.html"
     form = None
@@ -151,11 +164,9 @@ def signup_view(request):
             data = form.cleaned_data
             user = User.objects.create_user(
                 data['username'], data['email'], data['password'])
-            # user.save()
             login(request, user)
             Author.objects.create(
                 name=data['name'],
-                # email=data['email'],
                 bio=data["bio"],
                 user=user
             )
@@ -170,7 +181,6 @@ def login_view(request):
     form = None
 
     if request.method == "POST":
-        # breakpoint()
         form = LoginForm(request.POST)
         if form.is_valid():
             data = form.cleaned_data
